@@ -20,6 +20,7 @@ import java.util.Optional;
 
 @Controller
 public class ProjectController {
+    //Dependency Injections for Services
     @Autowired
     private UserService userService;
     @Autowired
@@ -27,6 +28,7 @@ public class ProjectController {
     @Autowired
     private StudentService studentService;
 
+    //Main Page when the Project Opens
     @GetMapping("/")
     public String index(Model model, @ModelAttribute("newUser") User newUser, @ModelAttribute("newLogin") LoginUser newLogin) {
         model.addAttribute("newUser", new User());
@@ -34,6 +36,7 @@ public class ProjectController {
         return "index";
     }
 
+    //Post Mapping for registering the user
     @PostMapping("/register")
     public String register(Model model, HttpSession session, @Valid @ModelAttribute("newUser") User newUser, BindingResult result) {
         userService.register(newUser, result);
@@ -46,6 +49,7 @@ public class ProjectController {
         }
     }
 
+    //Post Mapping for login-ing the user
     @PostMapping("/login")
     public String login(Model model, HttpSession session, @Valid @ModelAttribute("newLogin") LoginUser newLogin, BindingResult result) {
         User user = this.userService.login(newLogin, result);
@@ -58,12 +62,15 @@ public class ProjectController {
         }
     }
 
+    //GetMapping to logout the current user using session
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";
     }
 
+    //Main Page that shows up when a user registers,login
+    //A list of every Course appears
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
@@ -76,6 +83,7 @@ public class ProjectController {
         }
     }
 
+    //GetMapping for a new Course,will show createCourse.jsp
     @GetMapping("/classes/new")
     public String createC(Model model, HttpSession session, @ModelAttribute("course") Course course) {
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
@@ -88,6 +96,7 @@ public class ProjectController {
         }
     }
 
+    //PostMapping to create a new Course
     @PostMapping("/classes/new")
     public String createCourse(Model model, HttpSession session, @Valid @ModelAttribute("course") Course course, BindingResult result) {
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
@@ -104,6 +113,7 @@ public class ProjectController {
         }
     }
 
+    //Showind details about a project including all students and available students
     @GetMapping("/classes/{id}")
     public String courseDetails(Model model, @PathVariable("id") Long id,@ModelAttribute("student")Student student) {
         Course course = courseService.findById(id);
@@ -112,6 +122,8 @@ public class ProjectController {
         model.addAttribute("notYourStudents",studentService.findAllStudentsNotInThisCourse(course));
         return "courseDetails";
     }
+
+    //Post Mapping to create a new Student and assign him to a course
     @PostMapping("/students/{id}/new")
     public String createStudent(Model model,@PathVariable("id") Long id,HttpSession session,@Valid @ModelAttribute("student") Student student,BindingResult result) {
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
@@ -131,6 +143,7 @@ public class ProjectController {
             return "redirect:/classes/"+id;
         }
     }
+    //PostMapping to assign a current student to the course that is opened
     @PostMapping("/assign/{id}")
     public String assignStudent(@PathVariable("id") Long courseId,@RequestParam("studentId") Long studentId,HttpSession session){
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
@@ -146,6 +159,7 @@ public class ProjectController {
         }
     }
 
+    //Edit a course
     @GetMapping("/classes/{id}/edit")
     public String editCourse(Model model, @PathVariable("id") Long id) {
         Course course = courseService.findById(id);
@@ -153,6 +167,7 @@ public class ProjectController {
         return "editCourse";
     }
 
+    //PutMapping to edit a course
     @PutMapping("/classes/{id}/edit")
     public String updateCourse(HttpSession session,@PathVariable("id") Long id, Model model, @Valid @ModelAttribute("course") Course course, BindingResult result) {
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
@@ -171,6 +186,7 @@ public class ProjectController {
         }
     }
 
+    //DeleteMapping to delete a course
     @DeleteMapping("/courses/{id}/delete")
     public String deleteCourse(@PathVariable("id") Long id,HttpSession session){
         Long loggedInUserId = (Long) session.getAttribute("loggedInUserId");

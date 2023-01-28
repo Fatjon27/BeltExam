@@ -28,6 +28,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    //Business logic to register a user
     public User register(User newUser, BindingResult result){
         Optional<User> potentialUser = this.userRepository.findByEmail(newUser.getEmail()) ;
         if(potentialUser.isPresent()) {
@@ -46,6 +47,7 @@ public class UserService {
         }
     }
 
+    //Bussines logic to login a existing user
     public User login(LoginUser newLoginObject, BindingResult result){
         Optional<User> potentialUser = this.userRepository.findByEmail(newLoginObject.getEmail());
         if(!potentialUser.isPresent()){
