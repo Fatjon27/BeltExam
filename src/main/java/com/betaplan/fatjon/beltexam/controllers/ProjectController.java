@@ -178,6 +178,10 @@ public class ProjectController {
             return "redirect:/";
         } else {
             Course course = courseService.findById(id);
+            for(Student student: course.getAllStudents()){
+                student.getAllCourses().remove(course);
+                studentService.updateStudent(student);
+            }
             courseService.deleteByCourse(course);
             return "redirect:/dashboard";
         }

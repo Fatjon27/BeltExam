@@ -25,7 +25,7 @@ public class Course {
     @Max(value = 250,message = "The price should be lower than 250$")
     private Integer price;
     @NotBlank(message = "Description must be provided.")
-    @Size(max=255)
+    @Size(max=255,message = "You have exceded the maximum amount of words.")
     private String description;
 
     @NotBlank(message = "Time should be filled")

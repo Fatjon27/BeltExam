@@ -53,7 +53,7 @@ public class UserService {
         }
         else {
             if(!BCrypt.checkpw(newLoginObject.getPassword(),potentialUser.get().getPassword())){
-                result.rejectValue("passord","Incorrect","The password is not correct");
+                result.rejectValue("password","Incorrect","The password is not correct");
             }
         }
         if(result.hasErrors()){
